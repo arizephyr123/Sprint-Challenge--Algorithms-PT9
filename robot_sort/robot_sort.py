@@ -106,7 +106,7 @@ class SortingRobot:
         """
         Returns True if the robot is holding None and False otherwise.
         """
-        #print('in holding_none', self._item)
+        # print('in holding_none', self._item, self.compare_item())
         if self.compare_item() is not None:
             return False
         else:
@@ -117,6 +117,8 @@ class SortingRobot:
                     self.move_left()
                     # print(f'{self._item} vs {self._list[self._position]}')
                     return True
+                else: 
+                    return False
             elif self.can_move_left():
                 self.move_left()
                 if self.compare_item() is None:
@@ -124,126 +126,106 @@ class SortingRobot:
                     # return to original position
                     self.move_right()
                     return True
+                else: 
+                    return False
 
-    '''
-    def bubble_sort(arr):
-        # Your code here
-        swaps = 1
+    def collect_none(self):
+        if self.holding_none():
+            print('holding None? =>', self._item)
+            return 
+        else:
+            if self.can_move_right():
+                while self.can_move_right():
+                    if self.compare_item() is not None:
+                        print('compare_item-> ', self.compare_item())
+                        self.move_right()
+                    else:
+                        print('holding before =>', self._item)
+                        self.swap_item()
+                        print('now holding None? =>', self._item)
+                        return
+                print('moved right')
+            elif self.can_move_left():
+                while self.can_move_left():
+                    if self.compare_item() is not None:
+                        print('compare_item-> ', self.compare_item())
+                        self.move_left()
+                    else:
+                        print('holding before =>', self._item)
+                        self.swap_item()
+                        print('now holding None? =>', self._item)
+                        return
+                print('moved left')
 
-        while swaps > 0:
-            swaps = 0
-            for i in range(0, len(arr) -1):
-                if arr[i] > arr[i + 1]:
-                    swaps += 1 
-                    arr[i], arr[i+1] = arr[i+1], arr[i]
-    '''
 
     def sort(self):
-        """
-        Sort the robot's list.
-        """
-        print('sort beginning')
+        print('starting sort')
         print(self.__str__())
-        # self.set_light_on() # no swaps
-        # print('light on')
-        # print(self.__str__())
+        # if self.holding_none():
+            # self.swap_item()
 
-        if self.holding_none():
-            self.swap_item()
-        print('after trading out none')
-        print(self.__str__())
-        
-
-        # if self.light_is_on(): # while no swaps
-        #     print('while light on')
-        #     print(self.__str__())
-        while self.can_move_right():
-            print('while loop')
-            print('can move right')
-            self.move_right()
-            print('moved right')
-            print(self.__str__())
-            if self.compare_item() == None:  
-                pass
-            elif self.compare_item() == -1:  # item held is less
-                print(f'before {self._item} vs {self._list[self._position]}')
-                self.swap_item()
-                # print(f'after swap{self._item} vs {self._list[self._position]}')
-                self.set_light_on()
-                print('after swapped, light on')
-                print(self.__str__())
-        else: # at far right end
-            print('end of pass')
-            if self.compare_item() == -1:  
-                print(f'before {self._item} vs {self._list[self._position]}')
-                self.swap_item()
-                self.set_light_on()
-                print('largest swapped in')
-                print(self.__str__())
-                self.return_to_start()
-                print('back to start')
-                print(self.__str__())
-            if self.light_is_on() is False:
-                if self.holding_none():
-                    return
-                else:
-                    if self.compare_item() is None:
+            self.set_light_off() # make sure light off
+        if self.light_is_on() is False:
+            if self.can_move_right():
+                while self.can_move_right():
+                    print('i=', self._position, self._list[self._position], 'vs.', self._item)
+                    # if self.compare_item() is None or self.compare_item() == -1: # none or holding smaller
+                    if self.compare_item() == -1: # holding smaller
                         self.swap_item()
-                        return
-                            
-            return self.sort()
+                        # self.set_light_on()
+                    self.move_right()
+                    pass
+            if self.can_move_right() is False:
+                print('end of pass')
+                self.swap_item()
+                self.set_light_on()
+                print(self.__str__())
+                ############
+            if self.can_move_left():
+                while self.can_move_left():
+                    print('i=', self._position, self._list[self._position], 'vs.', self._item)
+                    if self.compare_item() == 1: # holding larger
+                    # if self.compare_item() is None or self.compare_item() == 1: # none or holding larger
+                        self.swap_item()
+                        self.set_light_on()
+                    self.move_left()
+                    pass
+            if self.can_move_left() is False: # if at end
+                if self.light_is_on(): # swaps occured
+                    print('recursion')
+                    return self.sort()
+                if self.light_is_on() is False: # no swaps
+                    pass
+                
+                
+            #     # and self.holding_none():
+            #     print('end of FINAL pass')
 
+            #     self.swap_item()
+            #     self.set_light_on()
+            #     print(self.__str__())
+            # if self.light_is_on() is False and self.holding_none():
+            #         pass
+            #     else:
+            #         print('recursion')
+            #         return self.sort()
         
+        # swaps or not
+        # if self.light_is_on() is False: # light still off, no swaps
+        #     if self.holding_none():
+        #         return
+        #     elif self.can_move_right():
+        #         while self.can_move_right():
+        #             self.move_right()
+        #             if self.compare_item() is not None:
+        #                 pass
+        #             elif self.holding_none():
+        #                 return
+        #             pass
 
-
+        return 
 
     
-    # def sort(self):
-    #     """
-    #     Sort the robot's list.
-    #     """
-
-    #     print(f'1. SORT- light on? {self.light_is_on()}')
-    #     self.set_light_on()
-    #     print(f'2. SORT- light on now? {self.light_is_on()}')
-    #     print('3. moving right')
-    #     while self.light_is_on(): 
-    #         if self.holding_none:
-    #             print('4. SORT- holding none?', self.holding_none())
-    #             self.swap_item()
-    #         print('5.', self._list)
-    #         if self.can_move_right():
-    #             while self.can_move_right():
-    #                 self.move_right()
-    #                 print(f'6. {self._position}- holding: {self._item}, comared to:{self._list[self._position]} ')
-    #                 if self.compare_item() == -1: # held item is less
-    #                     self.swap_item()
-
-    #             # # end, swap in largest
-    #             # self.swap_item()
-    #             if self.can_move_left():
-    #                 while self.can_move_left():
-    #                     self.move_left()
-    #                     print(f'7. {self._position}')
-
-    #     # light indicates if there has been a swap -> on = False, off = True
-    #     # light off indicates no swaps 
-    #     # if self.light_is_on(): 
-    #     #     self.sort()
-        
-    #     # no swaps, sorted done!
-    #     print(f'8. SORT- light on after pass? {self.light_is_on()}')
-        
-    #     print('9. sorted position', self._position)
-    #     while self.can_move_right():
-    #         self.move_right()
-    #         print(f'10. {self._position}- holding: {self._item}, compared to:{self._list[self._position]} ')
-    #         if self.compare_item() is None: 
-    #             if self.holding_none:
-    #                 self.swap_item()
-    #             return
-
-
 
 
 if __name__ == "__main__":
@@ -255,12 +237,21 @@ if __name__ == "__main__":
 
     robot = SortingRobot(l)
 
-    robot.sort()
-    # robot.holding_none()
-    # robot.move_right()
-    # print(robot._position)
-    # robot.move_right()
-    # print(robot._position)
+    print('None', robot._item)
+    robot.move_right()
+    print(robot._position)
+    robot.move_right()
+    print(robot._position)
+    robot.swap_item()
+    print('now holding', robot._item)
+    robot.collect_none()
+    print('None', robot._item)
+
+    # robot.sort()
+    # print('holding', robot._item)
+    # print('holding none?',  robot.holding_none())
+    # robot.swap_item()
+    # print('holding none?',  robot.holding_none())
     # robot.return_to_start()
     # print(robot._position)
     
