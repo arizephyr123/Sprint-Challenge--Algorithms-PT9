@@ -59,7 +59,7 @@ class SortingRobot:
         of it.
         This will increment the time counter by 1.
         """
-        print('in swap, dropping', self._item, 'grabbing ', self._list[self._position])
+        # print('in swap, dropping', self._item, 'grabbing ', self._list[self._position])
         self._time += 1
         # Swap the held item with the list item at the robot's position
         self._item, self._list[self._position] = self._list[self._position], self._item
@@ -159,28 +159,25 @@ class SortingRobot:
 
 
     def sort(self):
-        print('starting sort')
-        print(self.__str__())
-        # if self.holding_none():
-            # self.swap_item()
-
-            self.set_light_off() # make sure light off
-        if self.light_is_on() is False:
+        # print('starting sort')
+        # print(self.__str__())
+        self.swap_item()
+        
+        self.set_light_off() # make sure light off
+        # if self.light_is_on() is False:
             if self.can_move_right():
                 while self.can_move_right():
-                    print('i=', self._position, self._list[self._position], 'vs.', self._item)
+                    # print('i=', self._position, self._list[self._position], 'vs.', self._item)
                     # if self.compare_item() is None or self.compare_item() == -1: # none or holding smaller
                     if self.compare_item() == -1: # holding smaller
                         self.swap_item()
-                        # self.set_light_on()
+                        self.set_light_on()
                     self.move_right()
-                    pass
             if self.can_move_right() is False:
                 print('end of pass')
                 self.swap_item()
                 self.set_light_on()
                 print(self.__str__())
-                ############
             if self.can_move_left():
                 while self.can_move_left():
                     print('i=', self._position, self._list[self._position], 'vs.', self._item)
@@ -189,10 +186,9 @@ class SortingRobot:
                         self.swap_item()
                         self.set_light_on()
                     self.move_left()
-                    pass
             if self.can_move_left() is False: # if at end
                 if self.light_is_on(): # swaps occured
-                    print('recursion')
+                    # print('recursion')
                     return self.sort()
                 if self.light_is_on() is False: # no swaps
                     pass
@@ -237,17 +233,17 @@ if __name__ == "__main__":
 
     robot = SortingRobot(l)
 
-    print('None', robot._item)
-    robot.move_right()
-    print(robot._position)
-    robot.move_right()
-    print(robot._position)
-    robot.swap_item()
-    print('now holding', robot._item)
-    robot.collect_none()
-    print('None', robot._item)
+    # print('None', robot._item)
+    # robot.move_right()
+    # print(robot._position)
+    # robot.move_right()
+    # print(robot._position)
+    # robot.swap_item()
+    # print('now holding', robot._item)
+    # robot.collect_none()
+    # print('None', robot._item)
 
-    # robot.sort()
+    robot.sort()
     # print('holding', robot._item)
     # print('holding none?',  robot.holding_none())
     # robot.swap_item()
