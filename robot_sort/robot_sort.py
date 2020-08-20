@@ -97,10 +97,15 @@ class SortingRobot:
         """
         return self._light == "ON"
 
-    def return_to_start(self):
-        print('start')
+    def left_most_start(self):
+        # print('back to start')
         while self.can_move_left():
             self.move_left()
+
+    def right_most_end(self):
+        # print('go to end')
+        while self.can_move_right():
+            self.move_right()
     
     def holding_none(self):
         """
@@ -131,105 +136,70 @@ class SortingRobot:
 
     def collect_none(self):
         if self.holding_none():
-            print('holding None? =>', self._item)
+            # print('holding None? =>', self._item)
             return 
         else:
             if self.can_move_right():
                 while self.can_move_right():
                     if self.compare_item() is not None:
-                        print('compare_item-> ', self.compare_item())
+                        # print('compare_item-> ', self.compare_item())
                         self.move_right()
                     else:
-                        print('holding before =>', self._item)
+                        # print('holding before =>', self._item)
                         self.swap_item()
-                        print('now holding None? =>', self._item)
+                        # print('now holding None? =>', self._item)
                         return
-                print('moved right')
             elif self.can_move_left():
                 while self.can_move_left():
                     if self.compare_item() is not None:
-                        print('compare_item-> ', self.compare_item())
+                        # print('compare_item-> ', self.compare_item())
                         self.move_left()
                     else:
-                        print('holding before =>', self._item)
+                        # print('holding before =>', self._item)
                         self.swap_item()
-                        print('now holding None? =>', self._item)
+                        # print('now holding None? =>', self._item)
                         return
-                print('moved left')
-
-
-    def sort(self):
-        # print('starting sort')
-        # print(self.__str__())
-        self.swap_item()
-        
-        self.set_light_off() # make sure light off
-        # if self.light_is_on() is False:
-            if self.can_move_right():
-                while self.can_move_right():
-                    # print('i=', self._position, self._list[self._position], 'vs.', self._item)
-                    # if self.compare_item() is None or self.compare_item() == -1: # none or holding smaller
-                    if self.compare_item() == -1: # holding smaller
-                        self.swap_item()
-                        self.set_light_on()
-                    self.move_right()
-            if self.can_move_right() is False:
-                print('end of pass')
-                self.swap_item()
-                self.set_light_on()
-                print(self.__str__())
-            if self.can_move_left():
-                while self.can_move_left():
-                    print('i=', self._position, self._list[self._position], 'vs.', self._item)
-                    if self.compare_item() == 1: # holding larger
-                    # if self.compare_item() is None or self.compare_item() == 1: # none or holding larger
-                        self.swap_item()
-                        self.set_light_on()
-                    self.move_left()
-            if self.can_move_left() is False: # if at end
-                if self.light_is_on(): # swaps occured
-                    # print('recursion')
-                    return self.sort()
-                if self.light_is_on() is False: # no swaps
-                    pass
-                
-                
-            #     # and self.holding_none():
-            #     print('end of FINAL pass')
-
-            #     self.swap_item()
-            #     self.set_light_on()
-            #     print(self.__str__())
-            # if self.light_is_on() is False and self.holding_none():
-            #         pass
-            #     else:
-            #         print('recursion')
-            #         return self.sort()
-        
-        # swaps or not
-        # if self.light_is_on() is False: # light still off, no swaps
-        #     if self.holding_none():
-        #         return
-        #     elif self.can_move_right():
-        #         while self.can_move_right():
-        #             self.move_right()
-        #             if self.compare_item() is not None:
-        #                 pass
-        #             elif self.holding_none():
-        #                 return
-        #             pass
-
-        return 
 
     
+    # PLAN
+    # 2-way bubble sort
+    # move to right, swap if carrying None or smaller item (bubble up large items and None)
+    # then move left, swap if carrying larger item (bubble down small items)
+    # after 'return' pass back 
+        # if robot holding None, exit function
+        # else run sort function again 
+    
+    def sort(self):
+        while self.can_move_right() == True:
+            if self.compare_item() is None or self.compare_item() == -1: # either holding None or robot holding smaller item
+                self.swap_item()
+                self.move_right()
+            else:
+                # keep moving right w/o swapping
+                self.move_right()
+        while self.can_move_left() is True:
+            if self.compare_item() == 1: # robot holding larger item
+                self.swap_item()
+                self.move_left()
+            else:
+                self.move_left()
+        # if robot hoding None then sorted
+        # if robot NOT holding None, then repeat sort function
+        if self._item is not None:
+            self.sort()
+        # tried using my own custom function 
+        #  but the following extra function maxes out recursion stack
+        # if self.holding_none() is False:
+        #     self.sort()
 
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
-    l = [4, 3, 2, 1]
-    # l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
+    # l = [4, 3, 2, 1]
+
+    l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
 
     robot = SortingRobot(l)
 
